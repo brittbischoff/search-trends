@@ -1,16 +1,29 @@
 import streamlit as st
 from pytrends.request import TrendReq
 import pandas as pd
+import time
+from pytrends.exceptions import TooManyRequestsError
 
-# Function to fetch Google Trends data and related queries
+# Function to fetch Google Trends data and related queries with rate limiting
 def get_trends_data(search_terms, geo=''):
     pytrends = TrendReq(hl='en-US', tz=360)
     pytrends.build_payload(search_terms, cat=0, timeframe='today 12-m', geo=geo, gprop='')
-    data = pytrends.interest_over_time()
-    related_queries = pytrends.related_queries()
-    if not data.empty:
-        data = data.drop(labels=['isPartial'], axis='columns')
-    return data, related_queries
+    
+    # Retry logic for handling TooManyRequestsError
+    attempts = 0
+    while attempts < 5:
+        try:
+            data = pytrends.interest_over_time()
+            related_queries = pytrends.related_queries()
+            if not data.empty:
+                data = data.drop(labels=['isPartial'], axis='columns')
+            return data, related_queries
+        except TooManyRequestsError:
+            attempts += 1
+            st.warning("Rate limit reached, retrying...")
+            time.sleep(60)  # Wait for 60 seconds before retrying
+    st.error("Failed to fetch data after several attempts due to rate limiting.")
+    return pd.DataFrame(), {}
 
 # Streamlit app
 st.title('Google Search Trends')
