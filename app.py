@@ -33,3 +33,10 @@ if search_terms:
         st.line_chart(arizona_data)
     else:
         st.write('No data available for these search terms in Arizona.')
+
+  st.write(f'Search trends for: {", ".join(search_terms_list)} in Florida')
+    arizona_data = get_trends_data(search_terms_list, geo='US-AZ')
+    if not arizona_data.empty:
+        st.line_chart(arizona_data)
+    else:
+        st.write('No data available for these search terms in Florida.')
