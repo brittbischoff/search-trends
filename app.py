@@ -36,13 +36,20 @@ def create_wordcloud(query_data):
     return None
 
 # Function to display rising queries
-def display_rising_queries(rising_queries):
+def display_rising_queries(rising_queries, timeframe):
     if rising_queries is not None and not rising_queries.empty:
         rising_queries.reset_index(inplace=True)
-        st.subheader("Rising Queries - Last 7 Days")
+        st.subheader(f"Rising Queries - Last 7 Days ({timeframe})")
         st.write("Queries with the biggest increase in search frequency since the last time period. Results marked 'Breakout' had a tremendous increase, probably because these queries are new and had few (if any) prior searches.")
         for index, row in rising_queries.iterrows():
-            st.write(f"{row['query']} - {row['value']}")
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.write(row['query'])
+            with col2:
+                if row['value'] == 'Breakout':
+                    st.write('Breakout')
+                else:
+                    st.write(f"{row['value']}% increase")
 
 # Streamlit app
 st.title('Google Search Trends')
@@ -75,7 +82,7 @@ if search_terms:
                     else:
                         st.write(f"No wordcloud generated for '{term}'")
                 if rising_queries is not None and not rising_queries.empty:
-                    display_rising_queries(rising_queries.head(25))
+                    display_rising_queries(rising_queries.head(25), 'last 7 days')
     else:
         st.write('No data available for these search terms in the United States.')
 
@@ -100,7 +107,7 @@ if search_terms:
                     else:
                         st.write(f"No wordcloud generated for '{term}' in Arizona")
                 if rising_queries is not None and not rising_queries.empty:
-                    display_rising_queries(rising_queries.head(25))
+                    display_rising_queries(rising_queries.head(25), 'last 7 days')
     else:
         st.write('No data available for these search terms in Arizona.')
 
@@ -125,6 +132,6 @@ if search_terms:
                     else:
                         st.write(f"No wordcloud generated for '{term}' in Florida")
                 if rising_queries is not None and not rising_queries.empty:
-                    display_rising_queries(rising_queries.head(25))
+                    display_rising_queries(rising_queries.head(25), 'last 7 days')
     else:
         st.write('No data available for these search terms in Florida.')
