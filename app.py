@@ -49,24 +49,21 @@ if search_terms:
     # United States trends
     us_data, us_related_queries = get_trends_data(search_terms_list)
     if not us_data.empty:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.line_chart(us_data)
-        with col2:
-            st.write("United States related queries word cloud:")
-            for term in search_terms_list:
-                if term in us_related_queries:
-                    top_queries = us_related_queries[term]['top']
-                    if top_queries is not None and not top_queries.empty:
-                        st.write(f"Top queries for '{term}':")
-                        wordcloud = create_wordcloud(top_queries)
-                        if wordcloud:
-                            fig, ax = plt.subplots(figsize=(8, 4))
-                            ax.imshow(wordcloud, interpolation='bilinear')
-                            ax.axis('off')
-                            st.pyplot(fig)
-                        else:
-                            st.write(f"No wordcloud generated for '{term}'")
+        st.line_chart(us_data)
+        st.write("United States related queries word cloud:")
+        for term in search_terms_list:
+            if term in us_related_queries:
+                top_queries = us_related_queries[term]['top']
+                if top_queries is not None and not top_queries.empty:
+                    st.write(f"Top queries for '{term}':")
+                    wordcloud = create_wordcloud(top_queries)
+                    if wordcloud:
+                        fig, ax = plt.subplots(figsize=(8, 4))
+                        ax.imshow(wordcloud, interpolation='bilinear')
+                        ax.axis('off')
+                        st.pyplot(fig)
+                    else:
+                        st.write(f"No wordcloud generated for '{term}'")
     else:
         st.write('No data available for these search terms in the United States.')
 
@@ -74,48 +71,42 @@ if search_terms:
     st.write(f'Search trends for: {", ".join(search_terms_list)} in Arizona')
     arizona_data, arizona_related_queries = get_trends_data(search_terms_list, geo='US-AZ')
     if not arizona_data.empty:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.line_chart(arizona_data)
-        with col2:
-            st.write("Arizona related queries word cloud:")
-            for term in search_terms_list:
-                if term in arizona_related_queries:
-                    top_queries = arizona_related_queries[term]['top']
-                    if top_queries is not None and not top_queries.empty:
-                        st.write(f"Top queries for '{term}' in Arizona:")
-                        wordcloud = create_wordcloud(top_queries)
-                        if wordcloud:
-                            fig, ax = plt.subplots(figsize=(8, 4))
-                            ax.imshow(wordcloud, interpolation='bilinear')
-                            ax.axis('off')
-                            st.pyplot(fig)
-                        else:
-                            st.write(f"No wordcloud generated for '{term}' in Arizona")
+        st.line_chart(arizona_data)
+        st.write("Arizona related queries word cloud:")
+        for term in search_terms_list:
+            if term in arizona_related_queries:
+                top_queries = arizona_related_queries[term]['top']
+                if top_queries is not None and not top_queries.empty:
+                    st.write(f"Top queries for '{term}' in Arizona:")
+                    wordcloud = create_wordcloud(top_queries)
+                    if wordcloud:
+                        fig, ax = plt.subplots(figsize=(8, 4))
+                        ax.imshow(wordcloud, interpolation='bilinear')
+                        ax.axis('off')
+                        st.pyplot(fig)
+                    else:
+                        st.write(f"No wordcloud generated for '{term}' in Arizona")
     else:
         st.write('No data available for these search terms in Arizona.')
 
     # Florida trends
-    st.write(f'Search trends for: {", ".join(search_terms_list)} in Florida')
+    st.write(f'Search trends for: {", ". ", join(search_terms_list)} in Florida')
     florida_data, florida_related_queries = get_trends_data(search_terms_list, geo='US-FL')
     if not florida_data.empty:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.line_chart(florida_data)
-        with col2:
-            st.write("Florida related queries word cloud:")
-            for term in search_terms_list:
-                if term in florida_related_queries:
-                    top_queries = florida_related_queries[term]['top']
-                    if top_queries is not None and not top_queries.empty:
-                        st.write(f"Top queries for '{term}' in Florida:")
-                        wordcloud = create_wordcloud(top_queries)
-                        if wordcloud:
-                            fig, ax = plt.subplots(figsize=(8, 4))
-                            ax.imshow(wordcloud, interpolation='bilinear')
-                            ax.axis('off')
-                            st.pyplot(fig)
-                        else:
-                            st.write(f"No wordcloud generated for '{term}' in Florida")
+        st.line_chart(florida_data)
+        st.write("Florida related queries word cloud:")
+        for term in search_terms_list:
+            if term in florida_related_queries:
+                top_queries = florida_related_queries[term]['top']
+                if top_queries is not None and not top_queries empty:
+                    st.write(f"Top queries for '{term}' in Florida:")
+                    wordcloud = create_wordcloud(top_queries)
+                    if wordcloud:
+                        fig, ax = plt.subplots(figsize=(8, 4))
+                        ax.imshow(wordcloud, interpolation='bilinear')
+                        ax.axis('off')
+                        st.pyplot(fig)
+                    else:
+                        st.write(f"No wordcloud generated for '{term}' in Florida")
     else:
         st.write('No data available for these search terms in Florida.')
