@@ -56,4 +56,41 @@ if search_terms:
                 if wordcloud:
                     plt.figure(figsize=(10, 5))
                     plt.imshow(wordcloud, interpolation='bilinear')
-          
+                    plt.axis('off')
+                    st.pyplot(plt)
+    else:
+        st.write('No global data available for these search terms.')
+
+    st.write(f'Search trends for: {", ".join(search_terms_list)} in Arizona')
+    arizona_data, arizona_related_queries = get_trends_data(search_terms_list, geo='US-AZ')
+    if not arizona_data.empty:
+        st.line_chart(arizona_data)
+        st.write("Arizona related queries word cloud:")
+        for term in search_terms_list:
+            if term in arizona_related_queries:
+                top_queries = arizona_related_queries[term]['top']
+                wordcloud = create_wordcloud(top_queries)
+                if wordcloud:
+                    plt.figure(figsize=(10, 5))
+                    plt.imshow(wordcloud, interpolation='bilinear')
+                    plt.axis('off')
+                    st.pyplot(plt)
+    else:
+        st.write('No data available for these search terms in Arizona.')
+
+    st.write(f'Search trends for: {", ".join(search_terms_list)} in Florida')
+    florida_data, florida_related_queries = get_trends_data(search_terms_list, geo='US-FL')
+    if not florida_data.empty:
+        st.line_chart(florida_data)
+        st.write("Florida related queries word cloud:")
+        for term in search_terms_list:
+            if term in florida_related_queries:
+                top_queries = florida_related_queries[term]['top']
+                wordcloud = create_wordcloud(top_queries)
+                if wordcloud:
+                    plt.figure(figsize=(10, 5))
+                    plt.imshow(wordcloud, interpolation='bilinear')
+                    plt.axis('off')
+                    st.pyplot(plt)
+    else:
+        st.write('No data available for these search terms in Florida.')
