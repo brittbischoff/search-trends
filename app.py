@@ -90,7 +90,7 @@ if search_terms:
         st.write('No data available for these search terms in Arizona.')
 
     # Florida trends
-    st.write(f'Search trends for: {", ". ", join(search_terms_list)} in Florida')
+    st.write(f'Search trends for: {", ".join(search_terms_list)} in Florida')
     florida_data, florida_related_queries = get_trends_data(search_terms_list, geo='US-FL')
     if not florida_data.empty:
         st.line_chart(florida_data)
@@ -98,7 +98,7 @@ if search_terms:
         for term in search_terms_list:
             if term in florida_related_queries:
                 top_queries = florida_related_queries[term]['top']
-                if top_queries is not None and not top_queries empty:
+                if top_queries is not None and not top_queries.empty:
                     st.write(f"Top queries for '{term}' in Florida:")
                     wordcloud = create_wordcloud(top_queries)
                     if wordcloud:
