@@ -7,9 +7,9 @@ import time
 from pytrends.exceptions import TooManyRequestsError
 
 # Function to fetch Google Trends data and related queries with rate limiting
-def get_trends_data(search_terms, geo='US'):
+def get_trends_data(search_terms, geo='US', timeframe='today 12-m'):
     pytrends = TrendReq(hl='en-US', tz=360)
-    pytrends.build_payload(search_terms, cat=0, timeframe='today 12-m', geo=geo, gprop='')
+    pytrends.build_payload(search_terms, cat=0, timeframe=timeframe, geo=geo, gprop='')
     
     # Retry logic for handling TooManyRequestsError
     attempts = 0
@@ -50,20 +50,27 @@ if search_terms:
     us_data, us_related_queries = get_trends_data(search_terms_list)
     if not us_data.empty:
         st.line_chart(us_data)
-        st.write("United States related queries word cloud:")
+        st.write("United States related queries word cloud and rising queries:")
         for term in search_terms_list:
             if term in us_related_queries:
-                top_queries = us_related_queries[term]['top']
-                if top_queries is not None and not top_queries.empty:
-                    st.write(f"Top queries for '{term}':")
-                    wordcloud = create_wordcloud(top_queries)
-                    if wordcloud:
-                        fig, ax = plt.subplots(figsize=(8, 4))
-                        ax.imshow(wordcloud, interpolation='bilinear')
-                        ax.axis('off')
-                        st.pyplot(fig)
-                    else:
-                        st.write(f"No wordcloud generated for '{term}'")
+                col1, col2 = st.columns(2)
+                with col1:
+                    top_queries = us_related_queries[term]['top']
+                    if top_queries is not None and not top_queries.empty:
+                        st.write(f"Top queries for '{term}':")
+                        wordcloud = create_wordcloud(top_queries)
+                        if wordcloud:
+                            fig, ax = plt.subplots(figsize=(8, 4))
+                            ax.imshow(wordcloud, interpolation='bilinear')
+                            ax.axis('off')
+                            st.pyplot(fig)
+                        else:
+                            st.write(f"No wordcloud generated for '{term}'")
+                with col2:
+                    rising_queries = us_related_queries[term]['rising']
+                    if rising_queries is not None and not rising_queries.empty:
+                        st.write(f"Rising queries for '{term}' in the last 7 days:")
+                        st.write(rising_queries.head(25))
     else:
         st.write('No data available for these search terms in the United States.')
 
@@ -72,20 +79,27 @@ if search_terms:
     arizona_data, arizona_related_queries = get_trends_data(search_terms_list, geo='US-AZ')
     if not arizona_data.empty:
         st.line_chart(arizona_data)
-        st.write("Arizona related queries word cloud:")
+        st.write("Arizona related queries word cloud and rising queries:")
         for term in search_terms_list:
             if term in arizona_related_queries:
-                top_queries = arizona_related_queries[term]['top']
-                if top_queries is not None and not top_queries.empty:
-                    st.write(f"Top queries for '{term}' in Arizona:")
-                    wordcloud = create_wordcloud(top_queries)
-                    if wordcloud:
-                        fig, ax = plt.subplots(figsize=(8, 4))
-                        ax.imshow(wordcloud, interpolation='bilinear')
-                        ax.axis('off')
-                        st.pyplot(fig)
-                    else:
-                        st.write(f"No wordcloud generated for '{term}' in Arizona")
+                col1, col2 = st.columns(2)
+                with col1:
+                    top_queries = arizona_related_queries[term]['top']
+                    if top_queries is not None and not top_queries.empty:
+                        st.write(f"Top queries for '{term}' in Arizona:")
+                        wordcloud = create_wordcloud(top_queries)
+                        if wordcloud:
+                            fig, ax = plt.subplots(figsize=(8, 4))
+                            ax.imshow(wordcloud, interpolation='bilinear')
+                            ax.axis('off')
+                            st.pyplot(fig)
+                        else:
+                            st.write(f"No wordcloud generated for '{term}' in Arizona")
+                with col2:
+                    rising_queries = arizona_related_queries[term]['rising']
+                    if rising_queries is not None and not rising_queries.empty:
+                        st.write(f"Rising queries for '{term}' in Arizona in the last 7 days:")
+                        st.write(rising_queries.head(25))
     else:
         st.write('No data available for these search terms in Arizona.')
 
@@ -94,19 +108,26 @@ if search_terms:
     florida_data, florida_related_queries = get_trends_data(search_terms_list, geo='US-FL')
     if not florida_data.empty:
         st.line_chart(florida_data)
-        st.write("Florida related queries word cloud:")
+        st.write("Florida related queries word cloud and rising queries:")
         for term in search_terms_list:
             if term in florida_related_queries:
-                top_queries = florida_related_queries[term]['top']
-                if top_queries is not None and not top_queries.empty:
-                    st.write(f"Top queries for '{term}' in Florida:")
-                    wordcloud = create_wordcloud(top_queries)
-                    if wordcloud:
-                        fig, ax = plt.subplots(figsize=(8, 4))
-                        ax.imshow(wordcloud, interpolation='bilinear')
-                        ax.axis('off')
-                        st.pyplot(fig)
-                    else:
-                        st.write(f"No wordcloud generated for '{term}' in Florida")
+                col1, col2 = st.columns(2)
+                with col1:
+                    top_queries = florida_related_queries[term]['top']
+                    if top_queries is not None and not top_queries.empty:
+                        st.write(f"Top queries for '{term}' in Florida:")
+                        wordcloud = create_wordcloud(top_queries)
+                        if wordcloud:
+                            fig, ax = plt.subplots(figsize=(8, 4))
+                            ax.imshow(wordcloud, interpolation='bilinear')
+                            ax.axis('off')
+                            st.pyplot(fig)
+                        else:
+                            st.write(f"No wordcloud generated for '{term}' in Florida")
+                with col2:
+                    rising_queries = florida_related_queries[term]['rising']
+                    if rising_queries is not None and not rising_queries.empty:
+                        st.write(f"Rising queries for '{term}' in Florida in the last 7 days:")
+                        st.write(rising_queries.head(25))
     else:
         st.write('No data available for these search terms in Florida.')
