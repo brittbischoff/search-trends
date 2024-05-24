@@ -1,6 +1,8 @@
 import streamlit as st
 from pytrends.request import TrendReq
 import pandas as pd
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 import time
 from pytrends.exceptions import TooManyRequestsError
 
@@ -25,6 +27,14 @@ def get_trends_data(search_terms, geo=''):
     st.error("Failed to fetch data after several attempts due to rate limiting.")
     return pd.DataFrame(), {}
 
+# Function to create a word cloud from query data
+def create_wordcloud(query_data):
+    if query_data is not None and not query_data.empty:
+        query_text = ' '.join(query_data['query'].tolist())
+        wordcloud = WordCloud(width=800, height=400, max_words=25, background_color='white').generate(query_text)
+        return wordcloud
+    return None
+
 # Streamlit app
 st.title('Google Search Trends')
 
@@ -38,40 +48,12 @@ if search_terms:
     global_data, global_related_queries = get_trends_data(search_terms_list)
     if not global_data.empty:
         st.line_chart(global_data)
-        st.write("Global related queries and top queries:")
+        st.write("Global related queries word cloud:")
         for term in search_terms_list:
             if term in global_related_queries:
-                st.write(f"Related queries for '{term}':")
-                st.write(global_related_queries[term]['top'])
-                st.write(f"Rising queries for '{term}':")
-                st.write(global_related_queries[term]['rising'])
-    else:
-        st.write('No global data available for these search terms.')
-
-    st.write(f'Search trends for: {", ".join(search_terms_list)} in Arizona')
-    arizona_data, arizona_related_queries = get_trends_data(search_terms_list, geo='US-AZ')
-    if not arizona_data.empty:
-        st.line_chart(arizona_data)
-        st.write("Arizona related queries and top queries:")
-        for term in search_terms_list:
-            if term in arizona_related_queries:
-                st.write(f"Related queries for '{term}':")
-                st.write(arizona_related_queries[term]['top'])
-                st.write(f"Rising queries for '{term}':")
-                st.write(arizona_related_queries[term]['rising'])
-    else:
-        st.write('No data available for these search terms in Arizona.')
-
-    st.write(f'Search trends for: {", ".join(search_terms_list)} in Florida')
-    florida_data, florida_related_queries = get_trends_data(search_terms_list, geo='US-FL')
-    if not florida_data.empty:
-        st.line_chart(florida_data)
-        st.write("Florida related queries and top queries:")
-        for term in search_terms_list:
-            if term in florida_related_queries:
-                st.write(f"Related queries for '{term}':")
-                st.write(florida_related_queries[term]['top'])
-                st.write(f"Rising queries for '{term}':")
-                st.write(florida_related_queries[term]['rising'])
-    else:
-        st.write('No data available for these search terms in Florida.')
+                top_queries = global_related_queries[term]['top']
+                wordcloud = create_wordcloud(top_queries)
+                if wordcloud:
+                    plt.figure(figsize=(10, 5))
+                    plt.imshow(wordcloud, interpolation='bilinear')
+          
