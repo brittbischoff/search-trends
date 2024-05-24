@@ -2,3 +2,4 @@ streamlit
 pytrends
 pandas
 wordcloud
+matplotlib
