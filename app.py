@@ -53,9 +53,9 @@ def display_rising_queries(rising_queries, timeframe):
 
 # Function to fetch and display comparison data by Google property
 def display_comparison_by_property(search_terms_list, geo='US', timeframe='today 12-m'):
-    properties = ['web', 'news', 'images', 'youtube']
+    properties = ['', 'news', 'images', 'youtube']
     property_labels = {
-        'web': 'Web Search',
+        '': 'Web Search',
         'news': 'News Search',
         'images': 'Image Search',
         'youtube': 'YouTube Search'
