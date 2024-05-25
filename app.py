@@ -7,9 +7,9 @@ import time
 from pytrends.exceptions import TooManyRequestsError
 
 # Function to fetch Google Trends data and related queries with rate limiting
-def get_trends_data(search_terms, geo='US', timeframe='today 12-m'):
+def get_trends_data(search_terms, geo='US', timeframe='today 12-m', gprop=''):
     pytrends = TrendReq(hl='en-US', tz=360)
-    pytrends.build_payload(search_terms, cat=0, timeframe=timeframe, geo=geo, gprop='')
+    pytrends.build_payload(search_terms, cat=0, timeframe=timeframe, geo=geo, gprop=gprop)
     
     # Retry logic for handling TooManyRequestsError
     attempts = 0
@@ -51,6 +51,28 @@ def display_rising_queries(rising_queries, timeframe):
                 else:
                     st.write(f"{row['value']}% increase")
 
+# Function to fetch and display comparison data by Google property
+def display_comparison_by_property(search_terms_list, geo='US', timeframe='today 12-m'):
+    properties = ['web', 'news', 'images', 'youtube']
+    property_labels = {
+        'web': 'Web Search',
+        'news': 'News Search',
+        'images': 'Image Search',
+        'youtube': 'YouTube Search'
+    }
+    comparison_data = {}
+
+    for prop in properties:
+        data, _ = get_trends_data(search_terms_list, geo=geo, timeframe=timeframe, gprop=prop)
+        if not data.empty:
+            comparison_data[property_labels[prop]] = data
+
+    if comparison_data:
+        st.write("Comparison of Search Terms by Google Property:")
+        for label, data in comparison_data.items():
+            st.write(label)
+            st.line_chart(data)
+
 # Streamlit app
 st.title('Google Search Trends')
 
@@ -85,6 +107,9 @@ if search_terms:
                     display_rising_queries(rising_queries.head(25), 'last 7 days')
     else:
         st.write('No data available for these search terms in the United States.')
+
+    # Comparison by Google property
+    display_comparison_by_property(search_terms_list)
 
     # Arizona trends
     st.write(f'Search trends for: {", ".join(search_terms_list)} in Arizona')
