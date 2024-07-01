@@ -3,3 +3,4 @@ pytrends
 pandas
 wordcloud
 matplotlib
+requests
