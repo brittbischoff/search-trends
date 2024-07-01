@@ -4,7 +4,12 @@ import pandas as pd
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import time
-from pytrends.exceptions import TooManyRequestsError
+from pytrends.exceptions import TooManyRequestsError, ResponseError
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Function to fetch Google Trends data and related queries with rate limiting
 def get_trends_data(search_terms, geo='US', timeframe='today 12-m', gprop=''):
@@ -24,12 +29,16 @@ def get_trends_data(search_terms, geo='US', timeframe='today 12-m', gprop=''):
             attempts += 1
             st.warning("Rate limit reached, retrying...")
             time.sleep(60)  # Wait for 60 seconds before retrying
+        except ResponseError as e:
+            logger.error(f"ResponseError: {e}")
+            st.error("Failed to fetch data due to a response error.")
+            return pd.DataFrame(), {}
     st.error("Failed to fetch data after several attempts due to rate limiting.")
     return pd.DataFrame(), {}
 
 # Function to create a word cloud from query data
 def create_wordcloud(query_data):
-    if query_data is not None and not query_data.empty():
+    if query_data is not None and not query_data.empty:
         query_text = ' '.join(query_data['query'].tolist())
         wordcloud = WordCloud(width=800, height=400, max_words=25, background_color='white').generate(query_text)
         return wordcloud
@@ -76,5 +85,4 @@ if st.button("Fetch Trends"):
             st.error("No data found for the given parameters.")
 
 # Additional functionalities (Placeholders for further development)
-st.header("Additional Data Integrations")
-st.write("Integrate with SEMRush, Answer The Public, etc.")
+st.header("Placeholder For Additional Data Integrations")
